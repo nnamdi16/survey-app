@@ -16,7 +16,6 @@ async function bootstrap() {
     .setDescription('API service to power a Survey Application')
     .setVersion('1.0')
     .addBearerAuth()
-    .addTag('survey-app')
     .setContact(
       'Nwabuokei Nnamdi',
       'https://github.com/nnamdi16/survey-app',
