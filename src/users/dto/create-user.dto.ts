@@ -49,7 +49,6 @@ export class CreateUserDto {
   email: string;
 
   @IsString()
-  @IsEmail()
   @ApiProperty({
     description: 'User phone number',
     example: '+2347030000000',
@@ -65,7 +64,7 @@ export class CreateUserDto {
   @IsStrongPassword({ minLength: 6 })
   @ApiProperty({
     description: 'This states whether the question is required or not',
-    example: false,
+    example: 'Password',
     required: true,
     title: 'required',
   })
