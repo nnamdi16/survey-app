@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsEnum, IsString } from 'class-validator';
-import { IResponseType } from '../enum/responseType.enum';
+import { IQuestionType } from '../enum/responseType.enum';
 
 export class CreateSurveyDto {
   @IsString()
@@ -12,15 +12,15 @@ export class CreateSurveyDto {
   })
   title: string;
 
-  @IsEnum(IResponseType)
+  @IsEnum(IQuestionType)
   @ApiProperty({
     description: 'Type of response',
-    example: IResponseType.SHORT_ANSWER,
+    example: IQuestionType.SHORT_ANSWER,
     required: true,
     title: 'responseType',
-    enum: IResponseType,
+    enum: IQuestionType,
   })
-  responseType: IResponseType;
+  responseType: IQuestionType;
 
   @IsBoolean()
   @ApiProperty({
