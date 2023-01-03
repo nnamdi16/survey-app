@@ -1,4 +1,4 @@
-export enum IResponseType {
+export enum IQuestionType {
   SHORT_ANSWER = 'SHORT_ANSWER',
   PARAGRAPH = 'PARAGRAPH',
   MULTIPLE_CHOICE = 'MULTIPLE_CHOICE',
