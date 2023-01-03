@@ -1,11 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { UtilHelpers } from 'src/util/util';
 import { IUser } from '../interface/user.interface';
-import { Document, HydratedDocument } from 'mongoose';
+import { HydratedDocument } from 'mongoose';
 
-export type UserDocument = HydratedDocument<User>;
+export type UserDocument = HydratedDocument<IUser>;
 @Schema({ timestamps: true, collection: 'users' })
-export class User extends Document {
+export class User {
   @Prop({ required: true })
   firstName: string;
 
@@ -29,10 +29,10 @@ export class User extends Document {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
-export const userSchema = UserSchema;
-userSchema.pre<IUser>('save', function () {
-  const user = this as IUser;
-  const { salt, hash } = UtilHelpers.generateSaltAndHash(user.password);
+
+UserSchema.methods.encryptPassword = function (password: string | any) {
+  const passwordValue = password ? password : '';
+  const { salt, hash } = UtilHelpers.generateSaltAndHash(passwordValue);
   this.hash = hash;
   this.salt = salt;
-});
+};
