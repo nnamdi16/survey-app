@@ -21,6 +21,5 @@ export const createUserStub = (): CreateUserDto => {
     email: 'johndoe@example.com',
     mobile: '+2347000000000',
     password: 'password',
-    credentials: { salt: '', hash: '' },
   };
 };
