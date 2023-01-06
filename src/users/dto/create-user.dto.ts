@@ -1,7 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsEmail, IsString, IsStrongPassword } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { UtilHelpers } from '../../util/util';
+import { Credentials } from '../interface/user.interface';
 
 export class CreateUserDto {
   @IsString()
@@ -69,4 +70,11 @@ export class CreateUserDto {
     title: 'required',
   })
   password: string;
+
+  @IsString()
+  @ApiHideProperty()
+  @Transform(({ value, key, obj }) =>
+    UtilHelpers.encryptPassword(obj?.password),
+  )
+  credentials: Record<Credentials, string>;
 }
