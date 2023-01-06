@@ -6,5 +6,6 @@ export interface IUser {
   email: string;
   mobile: string;
   password: string;
-  setPassword(password: string): void;
 }
+
+export type Credentials = 'hash' | 'salt';

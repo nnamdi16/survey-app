@@ -1,5 +1,4 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { UtilHelpers } from 'src/util/util';
 import { IUser } from '../interface/user.interface';
 import { HydratedDocument } from 'mongoose';
 
@@ -29,10 +28,3 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
-
-UserSchema.methods.encryptPassword = function (password: string | any) {
-  const passwordValue = password ? password : '';
-  const { salt, hash } = UtilHelpers.generateSaltAndHash(passwordValue);
-  this.hash = hash;
-  this.salt = salt;
-};

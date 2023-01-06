@@ -1,20 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UsersService } from './users.service';
-import { IUser } from './interface/user.interface';
-import { User } from './entities/user.entity';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { UsersService } from '../users.service';
+import { IUser } from '../interface/user.interface';
+import { User } from '../entities/user.entity';
 import { v4 as uuidv4 } from 'uuid';
 import { Model, Types } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
-
-const userPayload: CreateUserDto = {
-  firstName: 'Oliver',
-  lastName: 'Tabby',
-  otherNames: ['Julius'],
-  email: 'oliver@example.com',
-  mobile: '07038123456',
-  password: 'Password12345',
-};
+import { createUserStub, userStub } from './stubs/user.stubs';
+// https://github.com/mguay22/nestjs-mongo
 
 const mockUser = (user: CreateUserDto): Omit<IUser, 'password'> => {
   const { firstName, lastName, otherNames, email, mobile } = user;
@@ -30,7 +23,7 @@ const mockUser = (user: CreateUserDto): Omit<IUser, 'password'> => {
 const mockUserDoc = (mock?: Partial<IUser>): Partial<User> => ({
   firstName: mock?.firstName || 'John',
   lastName: mock?.lastName || 'Doe',
-  _id: new Types.ObjectId(uuidv4()),
+  // _id: new Types.ObjectId(uuidv4()),
 });
 
 describe('UsersService', () => {
@@ -44,26 +37,10 @@ describe('UsersService', () => {
         {
           provide: getModelToken(User.name),
           useValue: {
-            new: jest.fn().mockResolvedValue(
-              mockUser({
-                firstName: '',
-                lastName: '',
-                email: '',
-                otherNames: [''],
-                mobile: '',
-                password: '',
-              }),
-            ),
-            constructor: jest.fn().mockResolvedValue(
-              mockUser({
-                firstName: '',
-                lastName: '',
-                email: '',
-                otherNames: [''],
-                mobile: '',
-                password: '',
-              }),
-            ),
+            new: jest.fn().mockResolvedValue(mockUser(createUserStub())),
+            constructor: jest
+              .fn()
+              .mockResolvedValue(mockUser(createUserStub())),
             create: jest.fn(),
           },
         },
@@ -86,10 +63,10 @@ describe('UsersService', () => {
     jest.spyOn(model, 'create').mockImplementationOnce(() =>
       Promise.resolve({
         _id: new Types.ObjectId(uuidv4()),
-        ...userPayload,
+        ...userStub(),
       }),
     );
-    const newUser = await service.create(userPayload);
-    expect(newUser).toEqual(mockUser(userPayload));
+    const newUser = await service.create(createUserStub());
+    expect(newUser).toEqual(mockUser(createUserStub()));
   });
 });

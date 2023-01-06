@@ -19,4 +19,14 @@ export class UtilHelpers {
 
     return `+${phone}`;
   }
+
+  static encryptPassword(password: string | any) {
+    const passwordValue = password ? password : '';
+    const { salt, hash } = UtilHelpers.generateSaltAndHash(passwordValue);
+    return { salt, hash };
+  }
+}
+
+export interface GenericMatch {
+  [key: string]: string | number | Date | any;
 }
