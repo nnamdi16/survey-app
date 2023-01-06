@@ -70,11 +70,4 @@ export class CreateUserDto {
     title: 'required',
   })
   password: string;
-
-  @IsString()
-  @ApiHideProperty()
-  @Transform(({ value, key, obj }) =>
-    UtilHelpers.encryptPassword(obj?.password),
-  )
-  credentials: Record<Credentials, string>;
 }
