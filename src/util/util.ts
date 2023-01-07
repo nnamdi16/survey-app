@@ -20,6 +20,14 @@ export class UtilHelpers {
     return `+${phone}`;
   }
 
+  static excludeProperties(obj: GenericMatch, props: string[]) {
+    const properties = props.reduce(
+      (o, key) => ({ ...o, [key]: { enumerable: false } }),
+      {},
+    );
+    return Object.defineProperties(obj, properties);
+  }
+
   static encryptPassword(password: string | any) {
     const passwordValue = password ? password : '';
     const { salt, hash } = UtilHelpers.generateSaltAndHash(passwordValue);

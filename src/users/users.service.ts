@@ -7,7 +7,7 @@ import { UsersRepository } from './users.repository';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly userRepository: UsersRepository) {}
+  constructor(private readonly userRepository: UsersRepository) { }
   async create(
     createUserDto: CreateUserDto,
   ): Promise<Omit<UserDocument, 'hash' | 'salt'>> {
@@ -22,8 +22,12 @@ export class UsersService {
     const userSecret = UtilHelpers.encryptPassword(password);
     const userData = { ...userSecret, email, ...otherParams };
     const { _doc } = await this.userRepository.create(userData);
-    const { salt, hash, __v, ...userDetails } = _doc;
-    return userDetails;
+    UtilHelpers.excludeProperties(_doc as UserDocument, [
+      'salt',
+      'hash',
+      '__v',
+    ]);
+    return _doc;
   }
 
   findAll() {
