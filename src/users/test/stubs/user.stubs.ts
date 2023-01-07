@@ -1,8 +1,7 @@
 import { Types } from 'mongoose';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { User, UserDocument } from 'src/users/entities/user.entity';
-import { UtilHelpers } from 'src/util/util';
-import { v4 as uuidv4 } from 'uuid';
+import { UtilHelpers } from '../../../util/util';
 
 export const userStub = (): Omit<UserDocument, 'hash' | 'salt'> => {
   return {
@@ -11,7 +10,7 @@ export const userStub = (): Omit<UserDocument, 'hash' | 'salt'> => {
     otherNames: null,
     email: 'johndoe@example.com',
     mobile: '+2347000000000',
-    _id: new Types.ObjectId(uuidv4()),
+    _id: new Types.ObjectId('63b98e47ab65c14e3eff516f'),
   };
 };
 
