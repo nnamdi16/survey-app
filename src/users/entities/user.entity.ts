@@ -12,7 +12,7 @@ export class User {
   lastName: string;
 
   @Prop({ required: false, default: null })
-  otherNames: [string];
+  otherNames?: [string];
 
   @Prop({ required: true, index: true })
   email: string;
