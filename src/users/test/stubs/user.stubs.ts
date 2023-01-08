@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { User, UserDocument } from 'src/users/entities/user.entity';
-import { UtilHelpers } from '../../../util/util';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { UtilHelpers } from 'src/util/util';
 
 export const userStub = (): Omit<UserDocument, 'hash' | 'salt'> => {
   return {
