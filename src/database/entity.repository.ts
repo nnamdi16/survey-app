@@ -1,5 +1,5 @@
 import { FilterQuery, HydratedDocument, Model } from 'mongoose';
-import { GenericMatch } from 'src/util/util';
+import { GenericMatch } from 'src/util/interface/genericMatch.interface';
 
 export abstract class EntityRepository<
   T extends HydratedDocument<GenericMatch>,
