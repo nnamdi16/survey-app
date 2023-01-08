@@ -1,8 +1,7 @@
-import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsEmail, IsString, IsStrongPassword } from 'class-validator';
 import { Transform } from 'class-transformer';
-import { UtilHelpers } from '../../util/util';
-import { Credentials } from '../interface/user.interface';
+import { UtilHelpers } from 'src/util/util';
 
 export class CreateUserDto {
   @IsString()

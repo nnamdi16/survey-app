@@ -7,7 +7,7 @@ import { UsersRepository } from './users.repository';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly userRepository: UsersRepository) { }
+  constructor(private readonly userRepository: UsersRepository) {}
   async create(
     createUserDto: CreateUserDto,
   ): Promise<Omit<UserDocument, 'hash' | 'salt'>> {
