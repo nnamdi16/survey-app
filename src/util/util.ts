@@ -1,4 +1,5 @@
 import { pbkdf2Sync, randomBytes } from 'crypto';
+import { GenericMatch } from './interface/genericMatch.interface';
 
 export class UtilHelpers {
   static generateSaltAndHash(password: string): { salt: string; hash: string } {
@@ -33,8 +34,4 @@ export class UtilHelpers {
     const { salt, hash } = UtilHelpers.generateSaltAndHash(passwordValue);
     return { salt, hash };
   }
-}
-
-export interface GenericMatch {
-  [key: string]: string | number | Date | any;
 }
