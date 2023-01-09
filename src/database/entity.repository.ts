@@ -15,11 +15,11 @@ export abstract class EntityRepository<
     entityFilterQuery: FilterQuery<T>,
     projection?: Record<string, unknown>,
   ): Promise<T | null> {
-    return await this.entityModel
-      .findOne(entityFilterQuery, {
-        __v: 0,
-        ...projection,
-      })
-      .exec();
+    return this.entityModel.findOne(entityFilterQuery, {
+      __v: 0,
+      salt: 0,
+      hash: 0,
+      ...projection,
+    });
   }
 }

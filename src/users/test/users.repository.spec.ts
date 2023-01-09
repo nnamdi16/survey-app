@@ -1,8 +1,9 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test } from '@nestjs/testing';
+import { FilterQuery } from 'mongoose';
 import { User } from '../entities/user.entity';
 import { UsersRepository } from '../users.repository';
-import { createUserEntityStub, createUserStub } from './stubs/user.stubs';
+import { createUserStub, userStub } from './stubs/user.stubs';
 import { UserModel } from './support/user.model';
 
 describe('UsersRepository', () => {
@@ -40,7 +41,57 @@ describe('UsersRepository', () => {
       });
 
       test('then it should return a user', () => {
-        expect(user).toEqual(createUserEntityStub());
+        expect(user).toEqual(userStub());
+      });
+    });
+  });
+
+  describe('find operations', () => {
+    let userModel: UserModel;
+    let userFilterQuery: FilterQuery<User>;
+    let projections: FilterQuery<User>;
+
+    beforeEach(async () => {
+      const moduleRef = await Test.createTestingModule({
+        providers: [
+          UsersRepository,
+          {
+            provide: getModelToken(User.name),
+            useClass: UserModel,
+          },
+        ],
+      }).compile();
+      userRepository = moduleRef.get<UsersRepository>(UsersRepository);
+      userModel = moduleRef.get<UserModel>(getModelToken(User.name));
+
+      userFilterQuery = {
+        email: createUserStub().email,
+      };
+      projections = { __v: 0, hash: 0, salt: 0 };
+
+      jest.clearAllMocks();
+    });
+    describe('findOne', () => {
+      describe('when findOne is called', () => {
+        let user: User;
+
+        beforeEach(async () => {
+          jest.spyOn(userModel, 'findOne');
+          user = (await userRepository.findOne(
+            userFilterQuery,
+          )) as unknown as User;
+        });
+
+        test('then it should call the userModel', () => {
+          expect(userModel.findOne).toHaveBeenCalledWith(
+            userFilterQuery,
+            projections,
+          );
+        });
+
+        test('then it should return a user', () => {
+          expect(user).toEqual(userStub());
+        });
       });
     });
   });
