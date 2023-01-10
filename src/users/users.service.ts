@@ -1,4 +1,9 @@
-import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { UtilHelpers } from 'src/util/util';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserDocument } from './entities/user.entity';
@@ -10,23 +15,27 @@ export class UsersService {
   async create(
     createUserDto: CreateUserDto,
   ): Promise<Omit<UserDocument, 'hash' | 'salt'>> {
-    const { email, password, ...otherParams } = createUserDto;
-    const existingUser = await this.userRepository.findOne({ email });
-    if (existingUser) {
-      throw new BadRequestException({
-        status: HttpStatus.BAD_REQUEST,
-        message: 'User with email or mobile already exists',
-      });
+    try {
+      const { email, password, ...otherParams } = createUserDto;
+      const existingUser = await this.userRepository.findOne({ email });
+      if (existingUser) {
+        throw new BadRequestException({
+          status: HttpStatus.BAD_REQUEST,
+          message: 'User with email or mobile already exists',
+        });
+      }
+      const userSecret = UtilHelpers.encryptPassword(password);
+      const userData = { ...userSecret, email, ...otherParams };
+      const { _doc } = await this.userRepository.create(userData);
+      UtilHelpers.excludeProperties(_doc as UserDocument, [
+        'salt',
+        'hash',
+        '__v',
+      ]);
+      return _doc;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
-    const userSecret = UtilHelpers.encryptPassword(password);
-    const userData = { ...userSecret, email, ...otherParams };
-    const { _doc } = await this.userRepository.create(userData);
-    UtilHelpers.excludeProperties(_doc as UserDocument, [
-      'salt',
-      'hash',
-      '__v',
-    ]);
-    return _doc;
   }
 
   // findAll() {
