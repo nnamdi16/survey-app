@@ -4,7 +4,7 @@ import { UsersController } from '../users.controller';
 import { UsersService } from '../users.service';
 import { createUserStub, userStub } from './stubs/user.stubs';
 
-jest.mock('../__mocks__/users.service');
+jest.mock('../users.service');
 describe('UsersController', () => {
   let userController: UsersController;
   let userService: UsersService;
@@ -20,10 +20,6 @@ describe('UsersController', () => {
     jest.clearAllMocks();
   });
 
-  // it('should be defined', () => {
-  //   expect(userController).toBeDefined();
-  // });
-
   describe('create', () => {
     describe('When create is called ', () => {
       let user: Omit<UserDocument, 'hash' | 'salt'>;
@@ -33,7 +29,7 @@ describe('UsersController', () => {
       });
 
       test('then it should call userService', () => {
-        expect(userService.create).toBeCalledWith(userStub());
+        expect(userService.create).toBeCalledWith(createUserStub());
       });
 
       test('it should return a user', () => {
