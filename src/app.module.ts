@@ -18,7 +18,7 @@ import * as Joi from '@hapi/joi';
       }),
     }),
     MongooseModule.forRootAsync({
-      imports: [ConfigModule],
+      imports: [ConfigModule, UsersModule],
       useFactory: async (configService: ConfigService) => {
         const username = configService.get('MONGO_USERNAME');
         const password = configService.get('MONGO_PASSWORD');
