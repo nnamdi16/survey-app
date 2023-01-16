@@ -34,4 +34,10 @@ export class UtilHelpers {
     const { salt, hash } = UtilHelpers.generateSaltAndHash(passwordValue);
     return { salt, hash };
   }
+
+  static decryptPassword(password: string | any, userHash: string) {
+    const passwordValue = password ? password : '';
+    const { hash } = UtilHelpers.generateSaltAndHash(passwordValue);
+    return hash === userHash;
+  }
 }

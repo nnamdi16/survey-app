@@ -1,11 +1,15 @@
 import {
   BadRequestException,
+  Body,
   HttpException,
   HttpStatus,
   Injectable,
+  Request,
+  Response,
 } from '@nestjs/common';
 import { UtilHelpers } from 'src/util/util';
 import { CreateUserDto } from './dto/create-user.dto';
+import { LoginDto } from './dto/login.dto';
 import { UserDocument } from './entities/user.entity';
 import { UsersRepository } from './users.repository';
 
@@ -38,9 +42,9 @@ export class UsersService {
     }
   }
 
-  // findAll() {
-  //   return `This action returns all users`;
-  // }
+  login(loginDetails: LoginDto) {
+    return `This action returns all users`;
+  }
 
   // update(id: number, updateUserDto: UpdateUserDto) {
   //   return `This action updates a #${id} user`;
