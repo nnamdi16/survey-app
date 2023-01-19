@@ -5,12 +5,14 @@ import {
   Request,
   Response,
   UseGuards,
+  HttpStatus,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { ApiTags } from '@nestjs/swagger';
-import { LoginDto } from './dto/login.dto';
-import { AuthGuard } from '@nestjs/passport';
+import { ApiBody, ApiResponse, ApiTags, OmitType } from '@nestjs/swagger';
+import { LoginDto, LoginResponse } from './dto/login.dto';
+import { LocalAuthGuard } from './auth/local.guard';
+import { Request as Requests, Response as Responses } from 'express';
 
 @ApiTags('User')
 @Controller('users')
@@ -23,12 +25,34 @@ export class UsersController {
   }
 
   @Post('auth')
-  @UseGuards(AuthGuard('local'))
-  login(@Request() req, @Response() res, @Body() body: LoginDto) {
-    console.log(req);
-    return this.usersService.login(body);
+  @UseGuards(LocalAuthGuard)
+  @ApiBody({
+    type: LoginDto,
+    description: 'Login Response',
+  })
+  @ApiResponse({
+    type: LoginResponse,
+    status: HttpStatus.OK,
+    description: 'Successfully logged In',
+    // links: {},
+  })
+  @ApiResponse({
+    type: OmitType(LoginResponse, ['token'] as const),
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized',
+    // links: {},
+  })
+  login(@Request() req: Requests, @Response() res: Responses) {
+    console.log(req.body);
+    const response = this.usersService.login(req.user);
+    return res.json(response).status(HttpStatus.OK);
   }
-
+  /**
+ * {
+  "password": "Password#123",
+  "username": "johndoe@example.com"
+}
+ */
   // @Get()
   // findAll() {
   //   return this.usersService.findAll();

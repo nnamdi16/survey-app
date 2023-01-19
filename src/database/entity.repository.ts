@@ -1,4 +1,9 @@
-import { FilterQuery, HydratedDocument, Model } from 'mongoose';
+import {
+  FilterQuery,
+  HydratedDocument,
+  Model,
+  ProjectionFields,
+} from 'mongoose';
 import { GenericMatch } from 'src/util/interface/genericMatch.interface';
 
 export abstract class EntityRepository<
@@ -13,13 +18,13 @@ export abstract class EntityRepository<
 
   async findOne(
     entityFilterQuery: FilterQuery<T>,
-    projection?: Record<string, unknown>,
+    projection?: ProjectionFields<T>,
   ): Promise<T | null> {
-    return this.entityModel.findOne(entityFilterQuery, {
-      __v: 0,
-      salt: 0,
-      hash: 0,
-      ...projection,
-    });
+    return await this.entityModel
+      .findOne(entityFilterQuery, {
+        ...projection,
+        __v: 0,
+      })
+      .exec();
   }
 }

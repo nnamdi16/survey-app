@@ -8,25 +8,25 @@ import { UsersRepository } from '../users.repository';
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(private userRepository: UsersRepository) {
-    console.log('Fear is a looser');
-    super({ usernameField: 'email' });
+    super();
+    // super({ usernameField: 'email' });
   }
   async validate(
     username: string,
     password: string,
   ): Promise<Omit<UserDocument, 'hash' | 'salt'>> {
-    console.log('Coming from America');
-    const { hash, ...otherDetails } = await this.userRepository.findOne(
+    const { hash, salt, ...userDetails } = (await this.userRepository.findOne(
       { email: username },
-      { hash: 1 },
-    );
-    const isValidPassword = UtilHelpers.decryptPassword(password, hash);
+      { __v: 0 },
+    )) || { hash: '', salt: '', ...{} };
+
+    const isValidPassword = UtilHelpers.validatePassword(password, salt, hash);
     if (!isValidPassword) {
       throw new UnauthorizedException({
         status: HttpStatus.UNAUTHORIZED,
         message: 'Unauthorized user',
       });
     }
-    return otherDetails;
+    return userDetails;
   }
 }

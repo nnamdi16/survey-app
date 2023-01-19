@@ -2,8 +2,11 @@ import { pbkdf2Sync, randomBytes } from 'crypto';
 import { GenericMatch } from './interface/genericMatch.interface';
 
 export class UtilHelpers {
-  static generateSaltAndHash(password: string): { salt: string; hash: string } {
-    const salt = randomBytes(16).toString('hex');
+  static generateSaltAndHash(
+    password: string,
+    userSalt?: string,
+  ): { salt: string; hash: string } {
+    const salt = userSalt ? userSalt : randomBytes(16).toString('hex');
 
     const hash = pbkdf2Sync(password, salt, 1000, 64, 'SHA1').toString('hex');
     return { salt, hash };
@@ -35,9 +38,13 @@ export class UtilHelpers {
     return { salt, hash };
   }
 
-  static decryptPassword(password: string | any, userHash: string) {
+  static validatePassword(
+    password: string | any,
+    userSalt: string,
+    userHash: string,
+  ) {
     const passwordValue = password ? password : '';
-    const { hash } = UtilHelpers.generateSaltAndHash(passwordValue);
+    const { hash } = UtilHelpers.generateSaltAndHash(passwordValue, userSalt);
     return hash === userHash;
   }
 }
