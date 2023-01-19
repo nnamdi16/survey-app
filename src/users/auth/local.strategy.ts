@@ -2,21 +2,17 @@ import { HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
 import { UtilHelpers } from 'src/util/util';
-import { UserDocument } from '../entities/user.entity';
+import { UserDetails } from '../interface/user.interface';
 import { UsersRepository } from '../users.repository';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(private userRepository: UsersRepository) {
-    super();
-    // super({ usernameField: 'email' });
+    super({ usernameField: 'email' });
   }
-  async validate(
-    username: string,
-    password: string,
-  ): Promise<Omit<UserDocument, 'hash' | 'salt'>> {
+  async validate(email: string, password: string): Promise<UserDetails> {
     const { hash, salt, ...userDetails } = (await this.userRepository.findOne(
-      { email: username },
+      { email },
       { __v: 0 },
     )) || { hash: '', salt: '', ...{} };
 
