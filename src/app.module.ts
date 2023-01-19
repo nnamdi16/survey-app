@@ -6,6 +6,7 @@ import { SurveyModule } from './survey/survey.module';
 import { UsersModule } from './users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from '@hapi/joi';
+import { ENVIROMENT_VARIABLE } from './util/constant';
 
 @Module({
   imports: [
@@ -20,10 +21,10 @@ import * as Joi from '@hapi/joi';
     MongooseModule.forRootAsync({
       imports: [ConfigModule, UsersModule],
       useFactory: async (configService: ConfigService) => {
-        const username = configService.get('MONGO_USERNAME');
-        const password = configService.get('MONGO_PASSWORD');
-        const database = configService.get('MONGO_DATABASE');
-        const host = configService.get('MONGO_HOST');
+        const username = configService.get(ENVIROMENT_VARIABLE.MONGO_USERNAME);
+        const password = configService.get(ENVIROMENT_VARIABLE.MONGO_PASSWORD);
+        const database = configService.get(ENVIROMENT_VARIABLE.MONGO_DATABASE);
+        const host = configService.get(ENVIROMENT_VARIABLE.MONGO_HOST);
         const uri = `mongodb+srv://${username}:${password}@${host}`;
 
         return {
