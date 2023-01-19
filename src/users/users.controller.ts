@@ -43,7 +43,6 @@ export class UsersController {
     // links: {},
   })
   login(@Request() req: Requests, @Response() res: Responses) {
-    console.log(req.body);
     const response = this.usersService.login(req.user);
     return res.json(response).status(HttpStatus.OK);
   }
