@@ -1,3 +1,5 @@
+import { UserDocument } from '../entities/user.entity';
+
 export interface IUser {
   [x: string]: any;
   firstName: string;
@@ -9,3 +11,5 @@ export interface IUser {
 }
 
 export type Credentials = 'hash' | 'salt';
+
+export type UserDetails = Omit<UserDocument, 'hash' | 'salt'>;
