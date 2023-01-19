@@ -1,21 +1,25 @@
 import {
   BadRequestException,
-  Body,
   HttpException,
   HttpStatus,
   Injectable,
-  Request,
-  Response,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { ENVIROMENT_VARIABLE, STATUS } from 'src/util/constant';
 import { UtilHelpers } from 'src/util/util';
 import { CreateUserDto } from './dto/create-user.dto';
-import { LoginDto } from './dto/login.dto';
 import { UserDocument } from './entities/user.entity';
+import { UserDetails } from './interface/user.interface';
 import { UsersRepository } from './users.repository';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly userRepository: UsersRepository) {}
+  constructor(
+    private readonly userRepository: UsersRepository,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
+  ) {}
   async create(
     createUserDto: CreateUserDto,
   ): Promise<Omit<UserDocument, 'hash' | 'salt'>> {
@@ -42,8 +46,14 @@ export class UsersService {
     }
   }
 
-  login(loginDetails: LoginDto) {
-    return `This action returns all users`;
+  login(payload: UserDetails) {
+    const token = this.jwtService.sign(payload, {
+      secret: this.configService.get(ENVIROMENT_VARIABLE.JWT_SECRET),
+      expiresIn: `${this.configService.get(
+        ENVIROMENT_VARIABLE.JWT_EXPIRATION_TIME,
+      )}s`,
+    });
+    return { message: STATUS.SUCCESS, token, status: HttpStatus.OK };
   }
 
   // update(id: number, updateUserDto: UpdateUserDto) {
