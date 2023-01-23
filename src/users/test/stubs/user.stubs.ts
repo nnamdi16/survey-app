@@ -1,8 +1,8 @@
 import { Types } from 'mongoose';
-import { UserDocument } from 'src/users/entities/user.entity';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { UserDetails } from 'src/users/interface/user.interface';
 
-export const userStub = (): Omit<UserDocument, 'hash' | 'salt'> => {
+export const userStub = (): UserDetails => {
   return {
     firstName: 'John',
     lastName: 'Doe',
