@@ -40,20 +40,20 @@ export class UsersService {
         'hash',
         '__v',
       ]);
-      return _doc;
+      const token = this.generateToken(_doc);
+      return { message: STATUS.SUCCESS, token, status: HttpStatus.OK };
     } catch (error) {
-      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+      throw new HttpException(error?.response?.message, HttpStatus.BAD_REQUEST);
     }
   }
 
-  login(payload: UserDetails) {
-    const token = this.jwtService.sign(payload, {
+  generateToken(payload: UserDetails) {
+    return this.jwtService.sign(payload, {
       secret: this.configService.get(ENVIROMENT_VARIABLE.JWT_SECRET),
       expiresIn: `${this.configService.get(
         ENVIROMENT_VARIABLE.JWT_EXPIRATION_TIME,
       )}s`,
     });
-    return { message: STATUS.SUCCESS, token, status: HttpStatus.OK };
   }
 
   // update(id: number, updateUserDto: UpdateUserDto) {

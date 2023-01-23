@@ -20,8 +20,9 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post('register')
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  create(@Body() createUserDto: CreateUserDto, @Response() res: Responses) {
+    const response = this.usersService.create(createUserDto);
+    return res.json(response).status(HttpStatus.OK);
   }
 
   @Post('auth')
@@ -43,7 +44,7 @@ export class UsersController {
     // links: {},
   })
   login(@Request() req: Requests, @Response() res: Responses) {
-    const response = this.usersService.login(req.user);
+    const response = this.usersService.generateToken(req.user);
     return res.json(response).status(HttpStatus.OK);
   }
   /**
