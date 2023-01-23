@@ -1,4 +1,4 @@
 export interface IQuestion {
   title: string;
-  responseType: ResponseType;
+  // responseType: ResponseType;
 }
