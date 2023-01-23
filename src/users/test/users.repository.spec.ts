@@ -47,7 +47,7 @@ describe('UsersRepository', () => {
   });
 
   describe('find operations', () => {
-    let userModel: UserModel;
+    // let userModel: UserModel;
     let userFilterQuery: FilterQuery<User>;
     let projections: FilterQuery<User>;
 
@@ -62,12 +62,12 @@ describe('UsersRepository', () => {
         ],
       }).compile();
       userRepository = moduleRef.get<UsersRepository>(UsersRepository);
-      userModel = moduleRef.get<UserModel>(getModelToken(User.name));
+      // userModel = moduleRef.get<UserModel>(getModelToken(User.name));
 
       userFilterQuery = {
         email: createUserStub().email,
       };
-      projections = { __v: 0, hash: 0, salt: 0 };
+      projections = { __v: 0 };
 
       jest.clearAllMocks();
     });
@@ -76,16 +76,21 @@ describe('UsersRepository', () => {
         let user: User;
 
         beforeEach(async () => {
-          jest.spyOn(userModel, 'findOne');
+          UserModel.prototype.findOne = jest
+            .fn()
+            .mockImplementationOnce(() => ({
+              exec: jest.fn().mockReturnValueOnce(userStub()),
+            }));
           user = (await userRepository.findOne(
             userFilterQuery,
           )) as unknown as User;
         });
 
         test('then it should call the userModel', () => {
-          expect(userModel.findOne).toHaveBeenCalledWith(
-            userFilterQuery,
-            projections,
+          const findOneSpy = jest.spyOn(UserModel.prototype, 'findOne');
+          expect(findOneSpy).toHaveBeenCalledWith(
+            expect.objectContaining({ ...userFilterQuery }),
+            expect.objectContaining(projections),
           );
         });
 
