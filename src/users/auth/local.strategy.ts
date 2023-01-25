@@ -11,16 +11,23 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     super({ usernameField: 'email' });
   }
   async validate(email: string, password: string): Promise<UserDetails> {
-    const { hash, salt, ...userDetails } = (await this.userRepository.findOne(
-      { email },
-      { __v: 0 },
-    )) || { hash: '', salt: '', ...{} };
-
+    const response = await this.userRepository.findOne({ email }, { __v: 0 });
+    console.log(response);
+    if (!Object.entries(response).length) {
+      console.log('Fire it all the way all along');
+      throw new UnauthorizedException({
+        status: HttpStatus.UNAUTHORIZED,
+        message: 'Unauthorized user',
+        data: {},
+      });
+    }
+    const { hash, salt, ...userDetails } = response;
     const isValidPassword = UtilHelpers.validatePassword(password, salt, hash);
     if (!isValidPassword) {
       throw new UnauthorizedException({
         status: HttpStatus.UNAUTHORIZED,
         message: 'Unauthorized user',
+        data: {},
       });
     }
     return userDetails;

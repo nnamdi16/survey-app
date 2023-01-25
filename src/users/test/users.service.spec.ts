@@ -1,6 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from '../users.service';
-import { createUserStub, userResponseStub, userStub } from './stubs/user.stubs';
+import {
+  createUserStub,
+  loggingUserStub,
+  userResponseStub,
+  userStub,
+} from './stubs/user.stubs';
 import { UsersRepository } from '../users.repository';
 import { BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
 import { UtilHelpers } from 'src/util/util';
@@ -28,7 +33,7 @@ describe('UsersService', () => {
         {
           provide: JwtService,
           useValue: {
-            sign: jest.fn().mockReturnValue(userResponseStub().token),
+            sign: jest.fn().mockReturnValue(userResponseStub().data.token),
           },
         },
         {
@@ -83,7 +88,7 @@ describe('UsersService', () => {
       });
       test('should encrypt the password', async () => {
         const result = service.generateToken(userStub());
-        expect(result).toEqual(userResponseStub().token);
+        expect(result).toEqual(userResponseStub().data.token);
       });
 
       test('should create a new user detail', async () => {
@@ -91,6 +96,13 @@ describe('UsersService', () => {
         expect(utilHelper).toHaveBeenCalledWith(createUserStub().password);
         expect(result).toEqual(userResponseStub());
       });
+    });
+  });
+
+  describe('login endpoint', () => {
+    test('should provide the user token after logging in', async () => {
+      const result = await service.login(loggingUserStub());
+      expect(result).toEqual(userResponseStub());
     });
   });
 });

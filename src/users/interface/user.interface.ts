@@ -13,9 +13,3 @@ export interface IUser {
 export type Credentials = 'hash' | 'salt';
 
 export type UserDetails = Omit<UserDocument, 'hash' | 'salt'>;
-
-export interface UserResponse {
-  message: string;
-  status: number;
-  token: string;
-}
