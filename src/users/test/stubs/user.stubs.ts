@@ -1,7 +1,8 @@
 import { HttpStatus } from '@nestjs/common';
 import { Types } from 'mongoose';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { UserDetails, UserResponse } from 'src/users/interface/user.interface';
+import { UserDetails } from 'src/users/interface/user.interface';
+import { ApiResponse, Modify } from 'src/util/api.response';
 
 export const userStub = (): UserDetails => {
   return {
@@ -13,12 +14,24 @@ export const userStub = (): UserDetails => {
     _id: new Types.ObjectId('63b98e47ab65c14e3eff516f'),
   };
 };
-export const userResponseStub = (): UserResponse => {
+export const userResponseStub = (): Modify<
+  ApiResponse,
+  { data: { token: string } }
+> => {
   return {
     message: 'SUCCESS',
     status: HttpStatus.OK.valueOf(),
-    token:
-      'eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY3NDUxMDc5MSwiaWF0IjoxNjc0NTEwNzkxfQ.U9OrmqbVhZikTM7_eC_VH2CUXt2X4VOfgYKGhYRupuo',
+    data: {
+      token:
+        'eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY3NDUxMDc5MSwiaWF0IjoxNjc0NTEwNzkxfQ.U9OrmqbVhZikTM7_eC_VH2CUXt2X4VOfgYKGhYRupuo',
+    },
+  };
+};
+export const unAuthorisedResponseStub = (): ApiResponse => {
+  return {
+    message: 'Unauthorized user',
+    status: HttpStatus.UNAUTHORIZED.valueOf(),
+    data: {},
   };
 };
 
@@ -30,6 +43,24 @@ export const createUserStub = (): CreateUserDto => {
     email: 'johndoe@example.com',
     mobile: '+2347000000000',
     password: 'password',
+  };
+};
+export const loggingUserStub = (): Pick<
+  CreateUserDto,
+  'email' | 'password'
+> => {
+  return {
+    email: 'johndoe@example.com',
+    password: 'password',
+  };
+};
+export const loggingWithoutUserStub = (): Pick<
+  CreateUserDto,
+  'email' | 'password'
+> => {
+  return {
+    email: '',
+    password: '',
   };
 };
 
