@@ -10,7 +10,7 @@ describe('UsersRepository', () => {
   let userRepository: UsersRepository;
 
   describe('create operation', () => {
-    beforeEach(async () => {
+    beforeAll(async () => {
       const moduleRef = await Test.createTestingModule({
         providers: [
           UsersRepository,
@@ -22,7 +22,7 @@ describe('UsersRepository', () => {
       }).compile();
       userRepository = moduleRef.get<UsersRepository>(UsersRepository);
     });
-    describe('When create is called', () => {
+    describe('When create() is called', () => {
       let user: User;
       let saveSpy: jest.SpyInstance;
       let constructorSpy: jest.SpyInstance;
@@ -68,11 +68,9 @@ describe('UsersRepository', () => {
         email: createUserStub().email,
       };
       projections = { __v: 0 };
-
-      jest.clearAllMocks();
     });
     describe('findOne', () => {
-      describe('when findOne is called', () => {
+      describe('when findOne() is called', () => {
         let user: User;
 
         beforeEach(async () => {

@@ -20,8 +20,11 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post('register')
-  create(@Body() createUserDto: CreateUserDto, @Response() res: Responses) {
-    const response = this.usersService.create(createUserDto);
+  async create(
+    @Body() createUserDto: CreateUserDto,
+    @Response() res: Responses,
+  ) {
+    const response = await this.usersService.create(createUserDto);
     return res.json(response).status(HttpStatus.OK);
   }
 

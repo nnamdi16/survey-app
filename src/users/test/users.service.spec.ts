@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from '../users.service';
-import { createUserStub, userStub } from './stubs/user.stubs';
+import { createUserStub, userResponseStub, userStub } from './stubs/user.stubs';
 import { UsersRepository } from '../users.repository';
 import { BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
 import { UtilHelpers } from 'src/util/util';
@@ -13,8 +13,6 @@ describe('UsersService', () => {
   let service: UsersService;
   const utilHelper = jest.fn();
   let repository: UsersRepository;
-  const token =
-    'eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY3NDUxMDc5MSwiaWF0IjoxNjc0NTEwNzkxfQ.U9OrmqbVhZikTM7_eC_VH2CUXt2X4VOfgYKGhYRupuo';
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -30,7 +28,7 @@ describe('UsersService', () => {
         {
           provide: JwtService,
           useValue: {
-            sign: jest.fn().mockReturnValue(token),
+            sign: jest.fn().mockReturnValue(userResponseStub().token),
           },
         },
         {
@@ -53,8 +51,8 @@ describe('UsersService', () => {
   });
 
   describe('create operation', () => {
-    describe('When create is called', () => {
-      test('then it should call the userModel', async () => {
+    describe('create() throws error', () => {
+      test('should throw error if user already exists', async () => {
         try {
           await service.create(createUserStub());
         } catch (error) {
@@ -70,8 +68,10 @@ describe('UsersService', () => {
           }),
         );
       });
+    });
 
-      test('should encrypt the password', async () => {
+    describe('create() method', () => {
+      beforeEach(async () => {
         jest.clearAllMocks();
         jest.spyOn(repository, 'findOne').mockResolvedValue(null);
         UtilHelpers.encryptPassword = utilHelper;
@@ -80,25 +80,16 @@ describe('UsersService', () => {
           hash: '4fd1a475d4fb273ed0e46e2774c1894b8763e6a61943865a602389d83a4201029b223e1bd715bd4aaee0683f4d474769cb35bfcd70e21c493abda0ad841b8e8c',
         };
         utilHelper.mockReturnValue(expectedValue);
-
-        const result = await service.generateToken(userStub());
-        // expect(utilHelper).toHaveBeenCalledWith(createUserStub().password);
-        expect(result).toEqual(token);
+      });
+      test('should encrypt the password', async () => {
+        const result = service.generateToken(userStub());
+        expect(result).toEqual(userResponseStub().token);
       });
 
       test('should create a new user detail', async () => {
-        jest.clearAllMocks();
-        jest.spyOn(repository, 'findOne').mockResolvedValue(null);
-        UtilHelpers.encryptPassword = utilHelper;
-        const expectedValue = {
-          salt: '9460efe9642e5618e7bdc5a5f1a3c63a',
-          hash: '4fd1a475d4fb273ed0e46e2774c1894b8763e6a61943865a602389d83a4201029b223e1bd715bd4aaee0683f4d474769cb35bfcd70e21c493abda0ad841b8e8c',
-        };
-        utilHelper.mockReturnValue(expectedValue);
-
         const result = await service.create(createUserStub());
         expect(utilHelper).toHaveBeenCalledWith(createUserStub().password);
-        expect(result).toEqual(userStub());
+        expect(result).toEqual(userResponseStub());
       });
     });
   });
