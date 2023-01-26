@@ -12,9 +12,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   }
   async validate(email: string, password: string): Promise<UserDetails> {
     const response = await this.userRepository.findOne({ email }, { __v: 0 });
-    console.log(response);
     if (!Object.entries(response).length) {
-      console.log('Fire it all the way all along');
       throw new UnauthorizedException({
         status: HttpStatus.UNAUTHORIZED,
         message: 'Unauthorized user',
