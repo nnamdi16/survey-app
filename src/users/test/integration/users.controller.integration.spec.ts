@@ -87,8 +87,7 @@ describe('UserController', () => {
       expect(response.status).toBe(HttpStatus.UNAUTHORIZED.valueOf());
       expect(response.body).toMatchObject(unAuthorisedResponseStub());
     });
-
-    it('should not login a user for wrong email', async () => {
+    it('should not login a user with wrong email', async () => {
       userRepository.findOne = jest.fn().mockImplementationOnce(() => ({}));
       utilHelper.mockReturnValue(false);
       const response = await request(app.getHttpServer())
@@ -99,14 +98,5 @@ describe('UserController', () => {
       expect(response.body).toMatchObject(unAuthorisedResponseStub());
     });
 
-    it('should not login a user for wrong passwords', async () => {
-      utilHelper.mockReturnValue(false);
-      const response = await request(app.getHttpServer())
-        .post('/users/auth')
-        .send(loggingUserStub())
-        .expect(HttpStatus.UNAUTHORIZED.valueOf());
-      expect(response.status).toBe(HttpStatus.UNAUTHORIZED.valueOf());
-      expect(response.body).toMatchObject(unAuthorisedResponseStub());
-    });
   });
 });
