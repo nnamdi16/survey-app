@@ -54,15 +54,6 @@ export const loggingUserStub = (): Pick<
     password: 'password',
   };
 };
-export const loggingWithoutUserStub = (): Pick<
-  CreateUserDto,
-  'email' | 'password'
-> => {
-  return {
-    email: '',
-    password: '',
-  };
-};
 
 export const encryptPasswordStub = () => {
   return {
